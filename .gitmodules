@@ -1,0 +1,9 @@
+[submodule "externals/floral"]
+	path = externals/floral
+	url = https://github.com/kolorist/floral.git
+[submodule "externals/helich"]
+	path = externals/helich
+	url = https://github.com/kolorist/helich.git
+[submodule "externals/clover"]
+	path = externals/clover
+	url = https://github.com/kolorist/clover.git
