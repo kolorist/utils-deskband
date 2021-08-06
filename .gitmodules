@@ -7,3 +7,9 @@
 [submodule "externals/clover"]
 	path = externals/clover
 	url = https://github.com/kolorist/clover.git
+[submodule "externals/winutils"]
+	path = externals/winutils
+	url = https://github.com/kolorist/winutils.git
+[submodule "externals/lua"]
+	path = externals/lua
+	url = https://github.com/kolorist/lua.git

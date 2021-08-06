@@ -1,15 +1,12 @@
 #include "DeskBand.h"
 
-#include <WinSock2.h>
-#include <ws2tcpip.h>
-#include <windows.h>
+#include <Windows.h>
 #include <uxtheme.h>
-#include <stdio.h>
 
-#include <Pdh.h>
-#include <PdhMsg.h>
-#include <iphlpapi.h>
-#include <comutil.h>
+#include <atlconv.h>
+#include <atlstr.h>
+
+#include <winutils/utils_system.h>
 
 #define RECTWIDTH(x)   ((x).right - (x).left)
 #define RECTHEIGHT(x)  ((x).bottom - (x).top)
@@ -18,6 +15,9 @@ extern HINSTANCE g_hInstance;
 extern long g_DllRefCount;
 extern CLSID CLSID_UtilsDeskBand;
 static const WCHAR g_szUtilsDeskBandClass[]     = L"UtilsDeskBandClass";
+
+static WCHAR szLine0[512] = L"szLine1";
+static WCHAR szLine1[512] = L"szLine2";
 
 CDeskBand::CDeskBand()
     : m_cRef(1)
@@ -33,6 +33,7 @@ CDeskBand::CDeskBand()
 
 CDeskBand::~CDeskBand()
 {
+    winutils::utils_system::clean_up();
     if (m_pSite)
     {
         m_pSite->Release();
@@ -376,12 +377,6 @@ void CDeskBand::OnPaint(const HDC hdcIn)
 {
     HDC hdc = hdcIn;
     PAINTSTRUCT ps;
-    /*
-     * U: 10000K D: 10000K TU: 999M TD: 1000M
-     * CPU: 100.0% RAM: 100% UP: 10000000s
-     */
-    static WCHAR szLine0[256] = L"szLine1";
-    static WCHAR szLine1[256] = L"szLine2";
 
     if (!hdc)
     {
@@ -452,19 +447,32 @@ void CDeskBand::OnPaint(const HDC hdcIn)
 
 void CDeskBand::OnCreate()
 {
-    OutputDebugString(TEXT("OnCreate"));
-    // select * from Win32_PerfRawData_Tcpip_NetworkInterface where Name = "Intel[R] Ethernet Connection [2] I219-V"
-    // get-wmiobject -namespace root\cimv2 -query 'select * from Win32_PerfRawData_Tcpip_NetworkInterface where Name = "Intel[R] Ethernet Connection [2] I219-V"'
     LOGFONT logFont;
     memset(&logFont, 0, sizeof(logFont));
     logFont.lfHeight = 12; // see PS
     logFont.lfWeight = FW_REGULAR;
     wcscpy_s(logFont.lfFaceName, TEXT("Segoe UI"));
     m_font = CreateFontIndirect(&logFont);
+
+    winutils::utils_system::initialize_as_dll();
+
+    SetTimer(m_hwnd, 0, 1000, nullptr);
 }
 
 void CDeskBand::OnTimer()
 {
+	c8 str0[256];
+	c8 str1[256];
+	winutils::utils_system::update(str0, 256, str1, 256);
+
+    USES_CONVERSION;
+	{
+		wcscpy_s(szLine0, 256, A2W(str0));
+	}
+	{
+		wcscpy_s(szLine1, 256, A2W(str1));
+	}
+
     RECT rect;
     GetClientRect(m_hwnd, &rect);
     InvalidateRect(m_hwnd, &rect, TRUE);

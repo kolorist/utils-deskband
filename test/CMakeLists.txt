@@ -2,11 +2,11 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 # 2. initial setup
-set (PROJECT_NAME "utils-deskband")
+set (PROJECT_NAME "test")
+set (EXECUTABLE_FILE_NAME "utils-test")
 project (${PROJECT_NAME})
-include ("${PROJECT_SOURCE_DIR}/project_configs.cmake")
 message (STATUS "Project: ${PROJECT_NAME}")
-message (STATUS "Executable: ${EXECUTABLE_FILE_NAME}.dll")
+message (STATUS "Executable: ${EXECUTABLE_FILE_NAME}.exe")
 message (STATUS "Project source directory: ${PROJECT_SOURCE_DIR}")
 message (STATUS "Project binary directory: ${PROJECT_BINARY_DIR}")
 
@@ -20,14 +20,12 @@ if (${USE_MSVC_PROJECT})
 	file (GLOB_RECURSE file_list
 		LIST_DIRECTORIES false
 		"${PROJECT_SOURCE_DIR}/src/*.cpp"
-		"${PROJECT_SOURCE_DIR}/src/*.def"
 		"${PROJECT_SOURCE_DIR}/src/*.c"
 		"${PROJECT_SOURCE_DIR}/src/*.h")
 else ()
 	file (GLOB_RECURSE file_list
 		LIST_DIRECTORIES false
 		"${PROJECT_SOURCE_DIR}/src/*.c"
-		"${PROJECT_SOURCE_DIR}/src/*.def"
 		"${PROJECT_SOURCE_DIR}/src/*.cpp")
 endif ()
 
@@ -45,27 +43,19 @@ else ()
 	set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -fcolor-diagnostics -fansi-escape-codes")
 endif ()
 
-# 8. subdirectories
-add_subdirectory (externals/floral)
-add_subdirectory (externals/helich)
-add_subdirectory (externals/clover)
-add_subdirectory (externals/lua)
-add_subdirectory (externals/winutils)
-add_subdirectory (test)
-
 # 9. platform specific linking
-add_library (${PROJECT_NAME} SHARED ${file_list})
+add_executable (${PROJECT_NAME} ${file_list})
 target_link_libraries (${PROJECT_NAME} 
 	floral
 	helich
 	clover
 	lua
 	winutils
+	pdh
 	wbemuuid
 	comsuppw
 	iphlpapi
-	comctl32
-	UxTheme)
+	comctl32)
 set (CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -Xlinker /subsystem:console")
 set_target_properties (${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_FILE_NAME})
 

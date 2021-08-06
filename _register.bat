@@ -1,3 +1,3 @@
 @echo off
 
-call regsvr32 clang64/UtilsDeskBand.dll
+call regsvr32 msvc/Debug/UtilsDeskBand.dll
