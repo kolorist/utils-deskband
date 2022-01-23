@@ -1,35 +1,3 @@
-function getBytesReceived()
-	return getCIMV2Value("Win32_PerfRawData_Tcpip_NetworkInterface", "BytesReceivedPersec")
-end
-
-function getBytesReceivedPerSec()
-	return getCIMV2Value("Win32_PerfFormattedData_Tcpip_NetworkInterface", "BytesReceivedPersec")
-end
-
-function getBytesSent()
-	return getCIMV2Value("Win32_PerfRawData_Tcpip_NetworkInterface", "BytesSentPersec")
-end
-
-function getBytesSentPerSec()
-	return getCIMV2Value("Win32_PerfFormattedData_Tcpip_NetworkInterface", "BytesSentPersec")
-end
-
-function getCPUTemp()
-	return getOHMValue("CPU Package", "Temperature")
-end
-
-function getCPULoad()
-	return getOHMValue("CPU Total", "Load")
-end
-
-function getGPUTemp()
-	return getOHMValue("GPU Core", "Temperature")
-end
-
-function getGPULoad()
-	return getOHMValue("GPU Core", "Load")
-end
-
 function compactBytes(nBytes)
 	if (nBytes <= 1024.0) then
 		return string.format("%4.1fB", nBytes)
@@ -60,6 +28,7 @@ function _update()
 	local gpuTemp = math.floor(getGPUTemp())
 	local gpuLoad = getGPULoad();
 	line1 = string.format("CPU: %d(%3.1f%%) GPU: %d(%3.1f%%) Q: %4.2fms", cpuTemp, cpuLoad, gpuTemp, gpuLoad, getQueryTime())
+	-- line1 = string.format("Q: %4.2fms", getQueryTime())
 
 	return line0, line1
 end
